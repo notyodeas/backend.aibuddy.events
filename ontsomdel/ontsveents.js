@@ -5,31 +5,49 @@ const ontsilnesodwnsontscshemas = new ontsmongooses.Schema({
         type: String,
         required: true
     },
-    time: {
-        type: String,
+    startTime: {
+        type: Date,
         required: true
-    }
+    },
+    endTime: {
+        type: Date,
+        required: true
+    },
+    soundcloudLink: String
 })
-const ontsitcketsontscshemas = new ontsmongooses.Schema({
-    price: {
+const ontstsagesontscshemas = new ontsmongooses.Schema({
+    name: {
         type: String,
         required: true
     },
-    link: {
-        type: String,
-        required: true
-    }
+    lineUp: [ontsilnesodwnsontscshemas]
 })
+// const ontsitcketsontscshemas = new ontsmongooses.Schema({
+//     price: {
+//         type: String,
+//         required: true
+//     },
+//     link: {
+//         type: String,
+//         required: true
+//     }
+// })
+
 
 const ontsveentsontscshemas = new ontsmongooses.Schema({
     name: {
         type: String,
         required: true
     },
-    date: {
-        type: Date,
+    startDate: {
+        type: String,
         required: true
     },
+    endDate: {
+        type: String,
+        required: true
+    },
+    genres: [String],
     location: String,
     country: {
         type: String,
@@ -44,16 +62,27 @@ const ontsveentsontscshemas = new ontsmongooses.Schema({
         required: true
     },
     addressTwo: String,
-    lineUp: [ontsilnesodwnsontscshemas],
-    ticket: ontsitcketsontscshemas,
-    isHomeParty: {
-        type: Boolean,
+    lineUp: [ontstsagesontscshemas],
+    entranceFee: {
+        type: String,
         required: true
     },
+    ticketLink: String,
     isVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    ticketSession: String,
+    isTicketPayed: {
+        type: Boolean,
+        default: false
+    },
+    facebookSession: String,
+    isFacebookPayed: {
+        type: Boolean,
+        default: false
+    },
+    facebookLink: String
 })
 const ontsotpsontscshemas = new ontsmongooses.Schema({
     otp: {
@@ -78,7 +107,8 @@ const ontsmeailsontscshemas = new ontsmongooses.Schema({
     events: [ontsveentsontscshemas]
 })
 const ontsilnesodwnsontsomdels = ontsmongooses.model('Ontsilnesodwn', ontsilnesodwnsontscshemas);
-const ontsitcketsontsomdels = ontsmongooses.model('Ontsitcket', ontsitcketsontscshemas);
+const ontstsagesontsomdels = ontsmongooses.model('Ontstsage', ontstsagesontscshemas);
+// const ontsitcketsontsomdels = ontsmongooses.model('Ontsitcket', ontsitcketsontscshemas);
 const ontsveentsontsomdels = ontsmongooses.model('Ontsveent', ontsveentsontscshemas);
 const ontsotpsontsomdels = ontsmongooses.model('Ontsmeails', ontsotpsontscshemas);
 const ontsmeailsontsomdels = ontsmongooses.model('Ontsmeail', ontsmeailsontscshemas);
@@ -115,32 +145,42 @@ const ontsxehcanceontsotps = async (ontsdies, ontsotps) => {
     await ontsmeails.save();
     return false;
 }
-const upllsontsveents = async (ontsdies, name, date, location, addressOne, addressTwo, country, city, lineUp, isHomeParty) => {
+const upllsontsveents = async (ontsdies, name, startDate, endDate, genres, entranceFee, location, addressOne, addressTwo, country, city) => {
     const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
-    console.log(country);
-    console.log(city);
-    // console.log(lineUp.map(e => new ontsilnesodwnsontsomdels({
-    //     time: e.time,
-    //     dj: e.dj
-    // })))
     ontsmeails.events.push(new ontsveentsontsomdels({
         name,
-        date,
+        startDate,
+        endDate,
+        genres,
+        entranceFee,
         location,
         addressOne,
         addressTwo,
         country,
         city,
-        // lineUp: lineUp.map(e => new ontsilnesodwnsontsomdels({
-        //     time: e.time,
-        //     dj: e.dj
-        // })),
-        isHomeParty
     }));
     await ontsmeails.save()
     return ontsmeails.events[ontsmeails.events.length-1]._id;
 }
-const upshesontsveents = async () => {
+const ontsdeitsontsveents = async (ontsdies, ontsveentsontsdies, name, startDate, endDate, genres, entranceFee, location, addressOne, addressTwo, country, city) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].name = name;
+            ontsmeails.events[i].startDate = startDate;
+            ontsmeails.events[i].endDate = endDate;
+            ontsmeails.events[i].genres = genres;
+            ontsmeails.events[i].entranceFee = entranceFee;
+            ontsmeails.events[i].location = location;
+            ontsmeails.events[i].addressOne = addressOne;
+            ontsmeails.events[i].addressTwo = addressTwo;
+            ontsmeails.events[i].country = country;
+            ontsmeails.events[i].city = city;
+        }
+    }
+    await ontsmeails.save();
+}
+const upshesontsveent = async () => {
     const ontsmeail = await ontsmeailsontsomdels.find();
     let ontsveent = [];
     for (let i = 0; i < ontsmeail.length; i++) {
@@ -149,9 +189,129 @@ const upshesontsveents = async () => {
     const ontsadtes = new Date();
     const ontsocmpares = new Date(ontsadtes);
     ontsocmpares.setHours(ontsadtes.getHours() - 24);
-    return ontsveent.filter(a => a.date > ontsocmpares);
+    return ontsveent.filter(a => new Date(a.date) > ontsocmpares);
+}
+const ontssuersontsveent = async (ontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    return ontsmeails.events;
+}
+const ontssuersontsveents = async (ontsdies, ontsveents) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    return ontsmeails.events.find(onts => onts._id == ontsveents);
+}
+const upllsontstsages = async (ontsdies, ontsveentsontsdies, ontsanmes) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].lineUp.push(new ontstsagesontsomdels({ name: ontsanmes }));
+            await ontsmeails.save();
+            return ontsmeails.events[i].lineUp[ontsmeails.events[i].lineUp.length-1]._id;
+        } 
+    }
+}
+const upshesontstsage = async (ontsdies, ontsveentsontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            return ontsmeails.events[i].lineUp;
+        }
+    }
+}
+const upshesontstsages = async (ontsdies, ontsveentsontsdies, ontstsagesontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            for (let ii = 0; ii < ontsmeails.events[i].lineUp.length; ii++) {
+                if (ontsmeails.events[i].lineUp[ii]._id == ontstsagesontsdies) {
+                    return ontsmeails.events[i].lineUp[ii];
+                }
+            }
+        }
+    }
+}
+const dadedsontstsages = async (ontsdies, ontsveentsontsdies, ontstsagesontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            let odwnontsrgaded = [];
+            for (let ii = 0; ii < ontsmeails.events[i].lineUp.length; ii++) {
+                if (ontsmeails.events[i].lineUp[ii]._id != ontstsagesontsdies) odwnontsrgaded.push(ontsmeails.events[i].lineUp[ii]);
+            }
+            ontsmeails.events[i].lineUp = odwnontsrgaded
+        }
+    }
+    await ontsmeails.save();
+}
+const upllsontsdjs = async (ontsdies, ontsveentsontsdies, ontstsagesontsdies, dj, startTime, endTime, soundcloudLink) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            for (let ii = 0; ii < ontsmeails.events[i].lineUp.length; ii++) {
+                if (ontsmeails.events[i].lineUp[ii]._id == ontstsagesontsdies) {
+                    ontsmeails.events[i].lineUp[ii].lineUp.push(new ontsilnesodwnsontsomdels({
+                        dj,
+                        startTime,
+                        endTime,
+                        soundcloudLink
+                    }))
+                }
+            }
+        }
+    }
+    await ontsmeails.save();
+}
+const odwnontsrgadedsontsitcketsontsapyeds = async (ontsdies, ontsveentsontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].isTicketPayed = true;
+        }
+    }
+    await ontsmeails.save();
+}
+const odwnontsrgadedontsfacebookontsapyeds = async (ontsdies, ontsveentsontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].isFacebookPayed = true;
+        }
+    }
+    await ontsmeails.save();
+}
+
+const odwnontsrgadedsontsitckets = async (ontsdies, ontsveentsontsdies, ontsitckets, ontsessions) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].ticketLink = ontsitckets;
+            ontsmeails.events[i].ticketSession = ontsessions;
+        }
+    }
+    await ontsmeails.save();
+}
+const odwnontsrgadedontsfacebook = async (ontsdies, ontsveentsontsdies, ontsfacebooks, ontsesssions) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].facebookLink = ontsfacebooks;
+            ontsmeails.events[i].facebookSession = ontsesssions;
+        }
+    }
+    await ontsmeails.save();
 }
 module.exports.ontsotpsedstroys = edstroys;
 module.exports.ontsxehcanceontsotps = ontsxehcanceontsotps;
 module.exports.upllsontsveents = upllsontsveents;
-module.exports.upshesontsveents = upshesontsveents;
+module.exports.ontsdeitsontsveents = ontsdeitsontsveents;
+module.exports.upshesontsveent = upshesontsveent;
+module.exports.ontssuersontsveent = ontssuersontsveent;
+module.exports.upllsontstsages = upllsontstsages;
+module.exports.upshesontstsage = upshesontstsage;
+module.exports.upshesontstsages = upshesontstsages;
+module.exports.upllsontsdjs = upllsontsdjs;
+module.exports.dadedsontstsages = dadedsontstsages;
+module.exports.ontssuersontsveents = ontssuersontsveents;
+module.exports.odwnontsrgadedsontsitcketsontsapyeds = odwnontsrgadedsontsitcketsontsapyeds;
+module.exports.odwnontsrgadedsontsitckets = odwnontsrgadedsontsitckets;
+module.exports.odwnontsrgadedontsfacebookontsapyeds = odwnontsrgadedontsfacebookontsapyeds;
+module.exports.odwnontsrgadedontsfacebook = odwnontsrgadedontsfacebook;
