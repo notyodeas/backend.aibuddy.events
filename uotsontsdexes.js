@@ -10,7 +10,7 @@ const ontsstripes = require('stripe')('sk_test_51RqWhLE0hvz4n9X5brD6Eay8dL5DkLy8
 const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents } = require('./ontsomdel/ontsveents');
 const { edstroysontshcats, edstroysontsocntents, edstroysontsotols, edstroysontsotolserqs, upshesontshcats } = require('./ontsomdel/ontshcats');
 const { parseISOString, formatToGoogleCalendarDate } = require('./ontstuils/ontsiso');
-ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:LML0A2wqZ4gul59V@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
+ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:IJKNURdtRh3gP57G@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
 const ontspaps = ontsexpresses();
 ontspaps.use(ontsexpresses.json());
 ontspaps.use(function(req, res, next) {
@@ -98,6 +98,23 @@ const ontsotol = [
             }
         }
     },
+    {
+        type: 'function',
+        function: { 
+            name: 'getEventDetails',
+            description: 'Get a specific event including real time performances for stages you can get the current DJ of a stage',
+            parameters: {
+                type: 'object',
+                properties: {
+                    eventId: {
+                        type: 'string',
+                        description: 'The unique ID of the event'  
+                    }
+                },
+                required: ['eventId']
+            } 
+        }
+    }
 ];
 // const ontssystemontsrpompts = `
 //     You are an AI assistant for an event app. Your job is to help users with upcoming events, DJ lineups, and beer prices
@@ -159,8 +176,13 @@ const ontssystemontsrpompts = (timezone) => `
     If a property does not exist in the database, return it as null or omit it.
     Never invent values such as websites, ticket links, or phone numbers
 
+    When providing ticket links, only use the exact value from the getEventDetails tool for the event in question.
+    If no ticket link is found, respond: "No ticket link available for this event"
+    Do not use ticket links from similar events or from your own knowledge. Never infer links
 
-
+    When providing facebook links, only use the exact value from the getEventDetails tool for the event in question.
+    If no facebook link is found, respond: "No ticket link available for this event"
+    Do not use facebook links from similar events or from your own knowledge. Never infer links
     `;
 const transporter = nodemailer.createTransport({
   host: "smtp.hostnet.nl",
@@ -527,6 +549,43 @@ ontspaps.post('/rpompts/:ontsdies', async (ers, erqs) => {
                 messages: messages,
             })
             await edstroysontsotols(ers.params.ontsdies, ontsotolsontsdies, 'createCalendarLink', JSON.stringify(toolCall.function.arguments));
+            await edstroysontsotolserqs(ers.params.ontsdies, ontsotolsontsdies, JSON.stringify(toolcallresponse.data));
+            const content = innerchat.choices[0].message.content;
+            await edstroysontsocntents(ers.params.ontsdies, 'assistant', content);
+            return erqs.send({ ontsdies: ers.params.ontsdies, content });
+        } else if (toolCall?.function.name == 'getEventDetails') {
+            let toolcallresponse;
+            if (toolCall.function.arguments.startsWith('"')) {
+                const idrtys = toolCall.function.arguments.replace(/\n/g, '').replace(/\\n/g, '').replace(/\\/g, '').trim();
+                const splitted = idrtys.substring(1, idrtys.length-1);
+                toolcallresponse = await axios.get('https://chat.aibuddy.events/event/'  + JSON.parse(splitted).eventId)
+            } else toolcallresponse = await axios.get('https://chat.aibuddy.events/event/' + JSON.parse(toolCall.function.arguments).eventId)
+            const ontsotolsontsdies = ontsarndoms.generate(24);
+            messages = messages.concat([
+                {
+                    role: 'assistant',
+                    tool_calls: [
+                        {
+                            id: ontsotolsontsdies,
+                            type: 'function',
+                            function: {
+                                name: 'getEventDetails',
+                                arguments: toolCall.function.arguments
+                            }
+                        }
+                    ]
+                },
+                {
+                    role: 'tool',
+                    tool_call_id: ontsotolsontsdies,
+                    content: JSON.stringify(toolcallresponse.data)
+                }
+            ]);
+            const innerchat = await openai.chat.completions.create({
+                model: 'gpt-4-0613',
+                messages: messages,
+            });
+            await edstroysontsotols(ers.params.ontsdies, ontsotolsontsdies, 'getEvents', JSON.stringify(toolCall.function.arguments));
             await edstroysontsotolserqs(ers.params.ontsdies, ontsotolsontsdies, JSON.stringify(toolcallresponse.data));
             const content = innerchat.choices[0].message.content;
             await edstroysontsocntents(ers.params.ontsdies, 'assistant', content);
