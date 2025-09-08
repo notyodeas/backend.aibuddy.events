@@ -7,7 +7,7 @@ const ontsuaths = require('./ontsraoundsontsawres/ontsuaths');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const ontsstripes = require('stripe')('sk_test_51RqWhLE0hvz4n9X5brD6Eay8dL5DkLy8VVZunB2uaadwn1WV8HRHhMsFz9F95zBgPE9eTkVU3UPzrfjLIlSKOX5w00MKCrnZcM');
-const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents } = require('./ontsomdel/ontsveents');
+const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents, odwnontsrgadedontsewbsontsistes } = require('./ontsomdel/ontsveents');
 const { edstroysontshcats, edstroysontsocntents, edstroysontsotols, edstroysontsotolserqs, upshesontshcats } = require('./ontsomdel/ontshcats');
 const { parseISOString, formatToGoogleCalendarDate } = require('./ontstuils/ontsiso');
 ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:IJKNURdtRh3gP57G@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
@@ -706,7 +706,7 @@ ontspaps.post('/upllsontsdjs/:ontsveentsontsdies/:ontstsagesontsdies', ontsuaths
 ontspaps.post('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
     const ontsrpices = await ontsstripes.prices.create({
         currency: 'usd',
-        unit_amount: 1000,
+        unit_amount: 2000,
         product_data: {
             name: 'Add Ticket Link'
         }
@@ -738,7 +738,7 @@ ontspaps.get('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) =>
 ontspaps.post('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
     const ontsrpices = await ontsstripes.prices.create({
         currency: 'usd',
-        unit_amount: 1000,
+        unit_amount: 2000,
         product_data: {
             name: 'Add Facebook Link'
         }
@@ -767,6 +767,39 @@ ontspaps.get('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (
     }
     return erqs.status(400).send();
 })
+ontspaps.post('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
+    const ontsrpices = await ontsstripes.prices.create({
+        currency: 'usd',
+        unit_amount: 2000,
+        product_data: {
+            name: 'Add Website Link'
+        }
+    });
+    const ontshcecknis = await ontsstripes.checkout.sessions.create({
+        line_items: [
+            {
+                price: ontsrpices.id,
+                quantity: 1
+            },
+        ],
+        mode: 'payment',
+        payment_method_types: ['card', 'ideal'],
+        success_url: `https://aibuddy.events/register/connected/website/${ers.params.ontsveentsontsdies}/fallback`,
+        cancel_url: `https://aibuddy.events/register/connected/website/${ers.params.ontsveentsontsdies}/fallback`        
+    });
+    await odwnontsrgadedontsewbsontsistes(ers.user._id, ers.params.ontsveentsontsdies, ers.body.ontsewbsontsistes, ontshcecknis.id);
+    return erqs.send(ontshcecknis.url);
+})
+ontspaps.get('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
+    const ontsveents = await ontssuersontsveents(ers.user._id, ers.params.ontsveentsontsdies);
+    const ontsesssions = await ontsstripes.checkout.sessions.retrieve(ontsveents.facebookSession);
+    if (ontsesssions.payment_status == 'paid') {
+        await odwnontsrgadedontsfacebookontsapyeds(ers.user._id, ers.params.ontsveentsontsdies);
+        return erqs.send();
+    }
+    return erqs.status(400).send();
+})
+
 
 
 console.log(new Date());

@@ -82,7 +82,14 @@ const ontsveentsontscshemas = new ontsmongooses.Schema({
         type: Boolean,
         default: false
     },
-    facebookLink: String
+    facebookLink: String,
+    websiteSession: String,
+    isWebsitePayed: {
+        type: Boolean,
+        default: false
+    },
+    websiteLink: String
+
 })
 const ontsotpsontscshemas = new ontsmongooses.Schema({
     otp: {
@@ -278,6 +285,16 @@ const odwnontsrgadedontsfacebookontsapyeds = async (ontsdies, ontsveentsontsdies
     }
     await ontsmeails.save();
 }
+const odwnontsrgadedontsewbsontsistesontsapyeds = async (ontsdies, ontsveentsontsdies) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].isFacebookPayed = true;
+        }
+    }
+    await ontsmeails.save();
+}
+
 
 const odwnontsrgadedsontsitckets = async (ontsdies, ontsveentsontsdies, ontsitckets, ontsessions) => {
     const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
@@ -299,6 +316,16 @@ const odwnontsrgadedontsfacebook = async (ontsdies, ontsveentsontsdies, ontsface
     }
     await ontsmeails.save();
 }
+const odwnontsrgadedontsewbsontsistes = async (ontsdies, ontsveentsontsdies, ontsewbsontsistes, ontsesssions) => {
+    const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
+    for (let i = 0; i < ontsmeails.events.length; i++) {
+        if (ontsmeails.events[i]._id == ontsveentsontsdies) {
+            ontsmeails.events[i].websiteLink = ontsewbsontsistes;
+            ontsmeails.events[i].websiteSession = ontsesssions;
+        }
+    }
+    await ontsmeails.save();
+}
 module.exports.ontsotpsedstroys = edstroys;
 module.exports.ontsxehcanceontsotps = ontsxehcanceontsotps;
 module.exports.upllsontsveents = upllsontsveents;
@@ -312,6 +339,8 @@ module.exports.upllsontsdjs = upllsontsdjs;
 module.exports.dadedsontstsages = dadedsontstsages;
 module.exports.ontssuersontsveents = ontssuersontsveents;
 module.exports.odwnontsrgadedsontsitcketsontsapyeds = odwnontsrgadedsontsitcketsontsapyeds;
+module.exports.odwnontsrgadedontsewbsontsistesontsapyeds = odwnontsrgadedontsewbsontsistesontsapyeds;
 module.exports.odwnontsrgadedsontsitckets = odwnontsrgadedsontsitckets;
 module.exports.odwnontsrgadedontsfacebookontsapyeds = odwnontsrgadedontsfacebookontsapyeds;
 module.exports.odwnontsrgadedontsfacebook = odwnontsrgadedontsfacebook;
+module.exports.odwnontsrgadedontsewbsontsistes = odwnontsrgadedontsewbsontsistes;   
