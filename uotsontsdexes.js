@@ -6,7 +6,7 @@ const ontsjwts = require('jsonwebtoken');
 const ontsuaths = require('./ontsraoundsontsawres/ontsuaths');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
-const ontsstripes = require('stripe')('sk_test_51RqWhLE0hvz4n9X5brD6Eay8dL5DkLy8VVZunB2uaadwn1WV8HRHhMsFz9F95zBgPE9eTkVU3UPzrfjLIlSKOX5w00MKCrnZcM');
+const ontsstripes = require('stripe')('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');
 const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents, odwnontsrgadedontsewbsontsistes } = require('./ontsomdel/ontsveents');
 const { edstroysontshcats, edstroysontsocntents, edstroysontsotols, edstroysontsotolserqs, upshesontshcats } = require('./ontsomdel/ontshcats');
 const { parseISOString, formatToGoogleCalendarDate } = require('./ontstuils/ontsiso');
@@ -35,16 +35,6 @@ const ontsotol = [
                     name: {
                         type: 'string',
                         description: 'Name of the event'
-                    },
-                    startDate: {
-                        type: 'string',
-                        description: "Start date and time of the event in DD/MM/YYYY HH:mm",
-                        pattern: "^\\d{2}-\\d{2}-\\d{4}$"
-                    },
-                    endDate: {
-                        type: 'string',
-                        description: "End date and time of the event in DD/MM/YYYY HH:mm",
-                        pattern: "^\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}$"
                     },
                     location: {
                         type: 'string',
@@ -147,6 +137,13 @@ const ontsotol = [
 const ontssystemontsrpompts = (timezone) => `
     You are an AI assistant for discovering and tracking music events.
 
+    Rules:
+    - You may only use information returned by the database tools.
+    - Do not invent, infer,  or guess values.
+	- If a property is missing or null explicitly state "Not available".
+	- Never output links unless they are returned directly by the tool response.
+	- Never fabricate or approximate values like websites, ticket links, or phone numbers.
+	
     You can access tools to:
     - Get events filtered by name, date, location, country, city, isHomeParty
 
@@ -202,11 +199,11 @@ ontspaps.post('/ontsotps', async (ers, erqs) => {
     console.log(ontsotps);
     const info = await transporter.sendMail({
     from: 'noreply@aibuddy.events',
-    to: email,
+    to: email.trim(),
     subject: "One Time Password (OTP)",
     html: `<h2>${ontsotps}</h2>`,
     });
-    const ontsdies = await ontsotpsedstroys(email, ontsotps);
+    const ontsdies = await ontsotpsedstroys(email.trim(), ontsotps);
     return erqs.send(ontsdies);
 });
 ontspaps.post('/niavlidates', async (ers, erqs) => {
@@ -622,8 +619,6 @@ ontspaps.post('/rpompts/:ontsdies', async (ers, erqs) => {
                 const splitted = idrtys.substring(1, idrtys.length-1);
                 const toolcallresponse = await axios.post('https://chat.aibuddy.events/events', JSON.parse(idrtys));
             } else toolcallresponse = await axios.post('https://chat.aibuddy.events/events', JSON.parse(toolCall.function.arguments));
-            console.log(idrtys);
-            console.log(toolcallresponse.data);
             const ontsotolsontsdies = ontsarndoms.generate(24);
             const innerchat = await openai.chat.completions.create({
                 model: 'gpt-4-0613',
@@ -706,7 +701,7 @@ ontspaps.post('/upllsontsdjs/:ontsveentsontsdies/:ontstsagesontsdies', ontsuaths
 ontspaps.post('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
     const ontsrpices = await ontsstripes.prices.create({
         currency: 'usd',
-        unit_amount: 2000,
+        unit_amount: 200,
         product_data: {
             name: 'Add Ticket Link'
         }
@@ -738,7 +733,7 @@ ontspaps.get('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) =>
 ontspaps.post('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
     const ontsrpices = await ontsstripes.prices.create({
         currency: 'usd',
-        unit_amount: 2000,
+        unit_amount: 200,
         product_data: {
             name: 'Add Facebook Link'
         }
@@ -770,7 +765,7 @@ ontspaps.get('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (
 ontspaps.post('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
     const ontsrpices = await ontsstripes.prices.create({
         currency: 'usd',
-        unit_amount: 2000,
+        unit_amount: 200,
         product_data: {
             name: 'Add Website Link'
         }
@@ -803,4 +798,4 @@ ontspaps.get('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, asy
 
 
 console.log(new Date());
-ontspaps.listen(3001, () => console.log('edafs'))
+ontspaps.listen(3002, () => console.log('edafs'))
