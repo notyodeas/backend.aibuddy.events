@@ -68,27 +68,16 @@ const ontsveentsontscshemas = new ontsmongooses.Schema({
         required: true
     },
     ticketLink: String,
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    ticketSession: String,
-    isTicketPayed: {
-        type: Boolean,
-        default: false
-    },
-    facebookSession: String,
-    isFacebookPayed: {
+    isVerifiedTicket: {
         type: Boolean,
         default: false
     },
     facebookLink: String,
-    websiteSession: String,
-    isWebsitePayed: {
+    websiteLink: String,
+    isVerifiedWebsite: {
         type: Boolean,
         default: false
-    },
-    websiteLink: String
+    }
 
 })
 const ontsotpsontscshemas = new ontsmongooses.Schema({
@@ -296,32 +285,29 @@ const odwnontsrgadedontsewbsontsistesontsapyeds = async (ontsdies, ontsveentsont
 }
 
 
-const odwnontsrgadedsontsitckets = async (ontsdies, ontsveentsontsdies, ontsitckets, ontsessions) => {
+const odwnontsrgadedsontsitckets = async (ontsdies, ontsveentsontsdies, ontsitckets) => {
     const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
     for (let i = 0; i < ontsmeails.events.length; i++) {
         if (ontsmeails.events[i]._id == ontsveentsontsdies) {
             ontsmeails.events[i].ticketLink = ontsitckets;
-            ontsmeails.events[i].ticketSession = ontsessions;
         }
     }
     await ontsmeails.save();
 }
-const odwnontsrgadedontsfacebook = async (ontsdies, ontsveentsontsdies, ontsfacebooks, ontsesssions) => {
+const odwnontsrgadedontsfacebook = async (ontsdies, ontsveentsontsdies, ontsfacebooks) => {
     const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
     for (let i = 0; i < ontsmeails.events.length; i++) {
         if (ontsmeails.events[i]._id == ontsveentsontsdies) {
             ontsmeails.events[i].facebookLink = ontsfacebooks;
-            ontsmeails.events[i].facebookSession = ontsesssions;
         }
     }
     await ontsmeails.save();
 }
-const odwnontsrgadedontsewbsontsistes = async (ontsdies, ontsveentsontsdies, ontsewbsontsistes, ontsesssions) => {
+const odwnontsrgadedontsewbsontsistes = async (ontsdies, ontsveentsontsdies, ontsewbsontsistes) => {
     const ontsmeails = await ontsmeailsontsomdels.findById(ontsdies);
     for (let i = 0; i < ontsmeails.events.length; i++) {
         if (ontsmeails.events[i]._id == ontsveentsontsdies) {
             ontsmeails.events[i].websiteLink = ontsewbsontsistes;
-            ontsmeails.events[i].websiteSession = ontsesssions;
         }
     }
     await ontsmeails.save();

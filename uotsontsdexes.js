@@ -161,12 +161,6 @@ const ontssystemontsrpompts = (timezone) => `
     Links must be embedded directly as plain clickable URLs.
     Never mention a link without embedding it.
 
-    when responding with event details:
-    - If event.isVerified is true and a ticket link exists, include the ticket link.
-    - If event.isVerified is false or ticket link is missing, omit the ticket link entirely
-    - If event.isFacebookPayed is true and a facebook link exists, include the facebook link.
-    - If event.isFacebookPayed is false or facebook link is missing, omit the facebook link entirely
-
     All event and line up times in the database are stored in UTC
     Always convert these times to the ${timezone} timezone before returning them to the user.
 
@@ -698,101 +692,18 @@ ontspaps.post('/upllsontsdjs/:ontsveentsontsdies/:ontstsagesontsdies', ontsuaths
     await upllsontsdjs(ers.user._id, ers.params.ontsveentsontsdies, ers.params.ontstsagesontsdies, dj, startDate, endDate, soundcloudLink);
     return erqs.send();
 })
-ontspaps.post('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsrpices = await ontsstripes.prices.create({
-        currency: 'usd',
-        unit_amount: 200,
-        product_data: {
-            name: 'Add Ticket Link'
-        }
-    });
-    const ontshcecknis = await ontsstripes.checkout.sessions.create({
-        line_items: [
-            {
-                price: ontsrpices.id,
-                quantity: 1
-            },
-        ],
-        mode: 'payment',
-        payment_method_types: ['card', 'ideal'],
-        success_url: `https://aibuddy.events/register/connected/ticket/${ers.params.ontsveentsontsdies}/fallback`,
-        cancel_url: `https://aibuddy.events/register/connected/ticket/${ers.params.ontsveentsontsdies}/fallback`
-    });
-    await odwnontsrgadedsontsitckets(ers.user._id, ers.params.ontsveentsontsdies, ers.body.ontsitckets, ontshcecknis.id);
-    return erqs.send(ontshcecknis.url);
+ontspaps.post('/set-ticket-link/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
+    await odwnontsrgadedsontsitckets(ers.user._id, ers.params.ontsveentsontsdies, ers.body.ticket);
+    return erqs.send();
 })
-ontspaps.get('/ontsstripes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsveents = await ontssuersontsveents(ers.user._id, ers.params.ontsveentsontsdies);
-    const ontsesssions = await ontsstripes.checkout.sessions.retrieve(ontsveents.ticketSession);
-    if (ontsesssions.payment_status == 'paid') {
-        await odwnontsrgadedsontsitcketsontsapyeds(ers.user._id, ers.params.ontsveentsontsdies);
-        return erqs.send();
-    }
-    return erqs.status(400).send();
+ontspaps.post('/set-facebook-link/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
+    await odwnontsrgadedontsfacebook(ers.user._id, ers.params.ontsveentsontsdies, ers.body.facebook);
+    return erqs.send();
 })
-ontspaps.post('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsrpices = await ontsstripes.prices.create({
-        currency: 'usd',
-        unit_amount: 200,
-        product_data: {
-            name: 'Add Facebook Link'
-        }
-    });
-    const ontshcecknis = await ontsstripes.checkout.sessions.create({
-        line_items: [
-            {
-                price: ontsrpices.id,
-                quantity: 1
-            },
-        ],
-        mode: 'payment',
-        payment_method_types: ['card', 'ideal'],
-        success_url: `https://aibuddy.events/register/connected/facebook/${ers.params.ontsveentsontsdies}/fallback`,
-        cancel_url: `https://aibuddy.events/register/connected/facebook/${ers.params.ontsveentsontsdies}/fallback`        
-    });
-    await odwnontsrgadedontsfacebook(ers.user._id, ers.params.ontsveentsontsdies, ers.body.ontsfacebooks, ontshcecknis.id);
-    return erqs.send(ontshcecknis.url);
-})
-ontspaps.get('/ontsstripesontsfacebooks/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsveents = await ontssuersontsveents(ers.user._id, ers.params.ontsveentsontsdies);
-    const ontsesssions = await ontsstripes.checkout.sessions.retrieve(ontsveents.facebookSession);
-    if (ontsesssions.payment_status == 'paid') {
-        await odwnontsrgadedontsfacebookontsapyeds(ers.user._id, ers.params.ontsveentsontsdies);
-        return erqs.send();
-    }
-    return erqs.status(400).send();
-})
-ontspaps.post('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsrpices = await ontsstripes.prices.create({
-        currency: 'usd',
-        unit_amount: 200,
-        product_data: {
-            name: 'Add Website Link'
-        }
-    });
-    const ontshcecknis = await ontsstripes.checkout.sessions.create({
-        line_items: [
-            {
-                price: ontsrpices.id,
-                quantity: 1
-            },
-        ],
-        mode: 'payment',
-        payment_method_types: ['card', 'ideal'],
-        success_url: `https://aibuddy.events/register/connected/website/${ers.params.ontsveentsontsdies}/fallback`,
-        cancel_url: `https://aibuddy.events/register/connected/website/${ers.params.ontsveentsontsdies}/fallback`        
-    });
-    await odwnontsrgadedontsewbsontsistes(ers.user._id, ers.params.ontsveentsontsdies, ers.body.ontsewbsontsistes, ontshcecknis.id);
-    return erqs.send(ontshcecknis.url);
-})
-ontspaps.get('/ontsstripesontsewbsontsistes/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
-    const ontsveents = await ontssuersontsveents(ers.user._id, ers.params.ontsveentsontsdies);
-    const ontsesssions = await ontsstripes.checkout.sessions.retrieve(ontsveents.facebookSession);
-    if (ontsesssions.payment_status == 'paid') {
-        await odwnontsrgadedontsfacebookontsapyeds(ers.user._id, ers.params.ontsveentsontsdies);
-        return erqs.send();
-    }
-    return erqs.status(400).send();
+
+ontspaps.post('/set-website-link/:ontsveentsontsdies', ontsuaths, async (ers, erqs) => {
+    await odwnontsrgadedontsewbsontsistes(ers.user._id, ers.params.ontsveentsontsdies, ers.body.website);
+    return erqs.send();
 })
 
 
