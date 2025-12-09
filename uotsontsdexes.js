@@ -10,7 +10,7 @@ const ontsstripes = require('stripe')('sk_live_51RqWgoCnvN9jWLDyioLZcCahLt1F5kVV
 const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents, odwnontsrgadedontsewbsontsistes } = require('./ontsomdel/ontsveents');
 const { edstroysontshcats, edstroysontsocntents, edstroysontsotols, edstroysontsotolserqs, upshesontshcats } = require('./ontsomdel/ontshcats');
 const { parseISOString, formatToGoogleCalendarDate } = require('./ontstuils/ontsiso');
-ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:IJKNURdtRh3gP57G@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
+ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:2sOvTBp9yJOJEIET@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
 const ontspaps = ontsexpresses();
 ontspaps.use(ontsexpresses.json());
 ontspaps.use(function(req, res, next) {
@@ -48,10 +48,6 @@ const ontsotol = [
                         type: 'string',
                         description: 'City of the event'
                     },
-                    isHomeParty: {
-                        type: 'string',
-                        description: "Whether or not the event is at someones home for example an afterparty at someones home"
-                    },
                     genre: {
                         type: 'string',
                         description: 'The genre of the event'
@@ -59,6 +55,10 @@ const ontsotol = [
                     dj: {
                         type: 'string',
                         description: 'The DJ of the event'
+                    },
+                    date: {
+                    	type: 'string',
+                    	description: "The date of the event in ISO format (YYYY-MM-DD)"
                     }
                 }
             }
