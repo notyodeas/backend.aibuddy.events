@@ -10,7 +10,7 @@ const ontsstripes = require('stripe')('sk_live_51RqWgoCnvN9jWLDyioLZcCahLt1F5kVV
 const { ontsotpsedstroys, ontsxehcanceontsotps, upllsontsveents, upshesontsveent, ontssuersontsveent, ontssuersontsveents, upllsontstsages, upshesontstsages, upllsontsdjs, upshesontstsage, dadedsontstsages, odwnontsrgadedsontsitcketsontsapyeds, odwnontsrgadedsontsitckets, odwnontsrgadedontsfacebook, odwnontsrgadedontsfacebookontsapyeds, ontsdeitsontsveents, odwnontsrgadedontsewbsontsistes } = require('./ontsomdel/ontsveents');
 const { edstroysontshcats, edstroysontsocntents, edstroysontsotols, edstroysontsotolserqs, upshesontshcats } = require('./ontsomdel/ontshcats');
 const { parseISOString, formatToGoogleCalendarDate } = require('./ontstuils/ontsiso');
-ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:2sOvTBp9yJOJEIET@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
+ontsmongooses.connect('mongodb+srv://quickresponsecodeeth:R2Mzd3ODu6Pv49Xb@cluster0.eniio7z.mongodb.net/aibuddyevents?retryWrites=true&w=majority&appName=aibuddy').then(() => console.log('ontsmongos')).catch(console.log);
 const ontspaps = ontsexpresses();
 ontspaps.use(ontsexpresses.json());
 ontspaps.use(function(req, res, next) {
@@ -20,7 +20,7 @@ ontspaps.use(function(req, res, next) {
     next();
 });
 const openai = new OpenAI({
-    apiKey: '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'
+    apiKey: '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'
 });
 const poens = process.env.JWT || 'abc';
 const ontsotol = [
@@ -176,12 +176,12 @@ const ontssystemontsrpompts = (timezone) => `
     Do not use facebook links from similar events or from your own knowledge. Never infer links
     `;
 const transporter = nodemailer.createTransport({
-  host: "smtp.hostnet.nl",
+  host: "smtp-relay.brevo.com",
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: true, // true for 465, false for other ports
   auth: {
-    user: "noreply@aibuddy.events",
-    pass: "Aschai32!Aschai",
+    user: "9dc94e001@smtp-brevo.com",
+    pass: "xsmtpsib-66897d4681aa7595341ee779b4938e8cb78c13291cd631f970840afecc614e7a-uObLwHR0mPCbLMvh",
   },
 });
 ontspaps.post('/ontsotps', async (ers, erqs) => {
