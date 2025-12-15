@@ -192,7 +192,7 @@ ontspaps.post('/ontsotps', async (ers, erqs) => {
     });
     console.log(ontsotps);
     const info = await transporter.sendMail({
-    from: 'noreply@aibuddy.events',
+    from: '9dc94e001@smtp-brevo.com',
     to: email.trim(),
     subject: "One Time Password (OTP)",
     html: `<h2>${ontsotps}</h2>`,
